@@ -2,33 +2,31 @@ import Endpoint from './models/Endpoint.js';
 import Group from './models/Group.js';
 import User from './models/User.js';
 import Branch from './models/Branch.js';
-import EndpointVsGroup from './models/EndpointVsGroup.js';
-import BranchVsGroup from './models/BranchVsGroup.js';
-import sequelizeInstance from './models/sequelize.js';
+import sequelize from './models/sequelize.js';
 import Company from './models/Company.js';
-import sequelize from 'sequelize';
+import Sequelize from 'sequelize';
 
 export default async () => {
-    const result = await Company.create({ name: 'Empresa Nome' });
-
-    await sequelizeInstance.transaction((transaction: sequelize.Transaction) => User.create(
+    console.log(await sequelize.transaction((transaction: Sequelize.Transaction) => Company.create(
         {
-            company_id: result.id,
-            name: 'Usuário Nome',
-            username: 'usuario',
-            password: 'Usuário Senha',
-            enabled: true,
+            name: 'Empresa Nome',
             groups: [
                 {
-                    company_id: 1,
                     name: 'Grupo Nome',
+                    branches: [{
+                        company_id: 1,
+                        name: 'Filial Nome',
+                    }],
                     endpoints: [
                         { path: '/', method: 'GET', description: 'Endpoint Descrição GET /' },
                         { path: '/a', method: 'GET', description: 'Endpoint Descrição GET /a' },
                     ],
-                    branches: [{
+                    users: [{
                         company_id: 1,
-                        name: 'Filial Nome',
+                        name: 'Usuário Nome',
+                        username: 'usuario',
+                        password: 'Usuário Senha',
+                        enabled: true,
                     }],
                 },
             ],
@@ -38,35 +36,28 @@ export default async () => {
             include: {
                 model: Group,
                 include: [
-                    Endpoint,
                     Branch,
+                    Endpoint,
+                    User,
                 ],
             },
         },
-    ));
+    )));
 
-    await sequelizeInstance.transaction((transaction: sequelize.Transaction) => EndpointVsGroup.bulkCreate(
-        [
-            { group_id: 1, endpoint: { path: '/', method: 'GET', description: 'Endpoint Descrição GET /' } },
-            { group_id: 1, endpoint: { path: '/a', method: 'GET', description: 'Endpoint Descrição GET /a' } },
-        ],
-        {
-            transaction,
-            include: Endpoint,
-        },
-    ));
-
-    await sequelizeInstance.transaction((transaction: sequelize.Transaction) => BranchVsGroup.bulkCreate(
-        [{
-            group_id: 1,
-            branch: {
-                company_id: 1,
-                name: 'Filial Nome',
+    console.log(JSON.stringify(
+        await Company.findOne(
+            {
+                include: {
+                    model: Group,
+                    include: [
+                        Branch,
+                        Endpoint,
+                        User,
+                    ],
+                },
             },
-        }],
-        {
-            transaction,
-            include: Branch,
-        },
+        ),
+        null,
+        4,
     ));
 };
