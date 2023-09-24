@@ -1,51 +1,51 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import sequelize from './sequelize.js';
+import BranchVsGroup from './BranchVsGroup.js';
+import Company from './Company.js';
+import EndpointVsGroup from './EndpointVsGroup.js';
+import GroupVsUser from './GroupVsUser.js';
 
-class Group extends sequelize.Model {
+class Group extends Sequelize.Model {
     static associate() {
         this.hasMany(
-            sequelizeInstance.models.branch_vs_group,
+            BranchVsGroup,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
         );
 
         this.belongsTo(
-            sequelizeInstance.models.company,
+            Company,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'company_id',
                     name: 'company_id',
                 },
             },
         );
 
         this.hasMany(
-            sequelizeInstance.models.endpoint_vs_group,
+            EndpointVsGroup,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
         );
 
         this.hasMany(
-            sequelizeInstance.models.group_vs_user,
+            GroupVsUser,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
@@ -56,13 +56,13 @@ class Group extends sequelize.Model {
 Group.init(
     {
         name: {
-            type: sequelize.DataTypes.STRING(32),
+            type: Sequelize.DataTypes.STRING(32),
             allowNull: false,
             validate: { notEmpty: true },
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'group',
         tableName: 'groups',
         indexes: [

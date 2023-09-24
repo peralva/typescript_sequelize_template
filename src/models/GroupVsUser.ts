@@ -1,53 +1,51 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import sequelize from './sequelize.js';
+import Group from './Group.js';
+import User from './User.js';
 
-class GroupVsUser extends sequelize.Model {
+class GroupVsUser extends Sequelize.Model {
     static associate() {
         this.belongsTo(
-            sequelizeInstance.models.group,
+            Group,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
         );
 
         this.belongsTo(
-            sequelizeInstance.models.user,
+            User,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'user_id',
                     name: 'user_id',
                 },
             },
         );
 
-        sequelizeInstance.models.group.belongsToMany(
-            sequelizeInstance.models.user,
+        Group.belongsToMany(
+            User,
             {
                 through: this,
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
         );
 
-        sequelizeInstance.models.user.belongsToMany(
-            sequelizeInstance.models.group,
+        User.belongsToMany(
+            Group,
             {
                 through: this,
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'user_id',
                     name: 'user_id',
                 },
             },
@@ -58,14 +56,14 @@ class GroupVsUser extends sequelize.Model {
 GroupVsUser.init(
     {
         id: {
-            type: sequelize.DataTypes.INTEGER,
+            type: Sequelize.DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false,
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'group_vs_user',
         tableName: 'groups_vs_users',
         indexes: [

@@ -1,40 +1,40 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import sequelize from './sequelize.js';
 import cryptoPassword from '../utils/cryptoPassword.js';
+import GroupVsUser from './GroupVsUser.js';
+import Token from './Token.js';
+import Company from './Company.js';
 
-class User extends sequelize.Model {
+class User extends Sequelize.Model {
     static associate = () => {
         this.belongsTo(
-            sequelizeInstance.models.company,
+            Company,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'company_id',
                     name: 'company_id',
                 },
             },
         );
 
         this.hasMany(
-            sequelizeInstance.models.group_vs_user,
+            GroupVsUser,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'user_id',
                     name: 'user_id',
                 },
             },
         );
 
         this.hasMany(
-            sequelizeInstance.models.token,
+            Token,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'user_id',
                     name: 'user_id',
                 },
             },
@@ -45,7 +45,7 @@ class User extends sequelize.Model {
 User.init(
     {
         username: {
-            type: sequelize.DataTypes.STRING(16),
+            type: Sequelize.DataTypes.STRING(16),
             allowNull: false,
             validate: {
                 notEmpty: true,
@@ -53,12 +53,12 @@ User.init(
             },
         },
         name: {
-            type: sequelize.DataTypes.STRING(64),
+            type: Sequelize.DataTypes.STRING(64),
             allowNull: false,
             validate: { notEmpty: true },
         },
         password: {
-            type: sequelize.DataTypes.STRING(128),
+            type: Sequelize.DataTypes.STRING(128),
             allowNull: false,
             validate: {
                 notEmpty: true,
@@ -71,13 +71,13 @@ User.init(
             },
         },
         enabled: {
-            type: sequelize.DataTypes.BOOLEAN,
+            type: Sequelize.DataTypes.BOOLEAN,
             allowNull: false,
             defaultValue: true,
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'user',
         tableName: 'users',
         indexes: [

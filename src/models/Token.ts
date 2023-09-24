@@ -1,16 +1,16 @@
-import sequelize from 'sequelize';
+import Sequelize from 'sequelize';
 import crypto from 'crypto';
-import sequelizeInstance from './sequelize.js';
+import sequelize from './sequelize.js';
+import User from './User.js';
 
-class Token extends sequelize.Model {
+class Token extends Sequelize.Model {
     static associate() {
         this.belongsTo(
-            sequelizeInstance.models.user,
+            User,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'user_id',
                     name: 'user_id',
                 },
             },
@@ -21,7 +21,7 @@ class Token extends sequelize.Model {
 Token.init(
     {
         value: {
-            type: sequelize.DataTypes.STRING(88),
+            type: Sequelize.DataTypes.STRING(88),
             allowNull: false,
             validate: {
                 notEmpty: true,
@@ -35,7 +35,7 @@ Token.init(
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'token',
         tableName: 'tokens',
         indexes: [

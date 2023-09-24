@@ -1,53 +1,51 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import Branch from './Branch.js';
+import Group from './Group.js';
+import sequelize from './sequelize.js';
 
-class BranchVsGroup extends sequelize.Model {
+class BranchVsGroup extends Sequelize.Model {
     static associate() {
         this.belongsTo(
-            sequelizeInstance.models.branch,
+            Branch,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'branch_id',
                     name: 'branch_id',
                 },
             },
         );
 
         this.belongsTo(
-            sequelizeInstance.models.group,
+            Group,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
         );
 
-        sequelizeInstance.models.branch.belongsToMany(
-            sequelizeInstance.models.group,
+        Branch.belongsToMany(
+            Group,
             {
                 through: this,
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'branch_id',
                     name: 'branch_id',
                 },
             },
         );
 
-        sequelizeInstance.models.group.belongsToMany(
-            sequelizeInstance.models.branch,
+        Group.belongsToMany(
+            Branch,
             {
                 through: this,
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
@@ -58,14 +56,14 @@ class BranchVsGroup extends sequelize.Model {
 BranchVsGroup.init(
     {
         id: {
-            type: sequelize.DataTypes.INTEGER,
+            type: Sequelize.DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false,
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'branch_vs_group',
         tableName: 'branches_vs_groups',
         indexes: [

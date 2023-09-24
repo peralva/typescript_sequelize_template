@@ -1,27 +1,27 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import sequelize from './sequelize.js';
+import Company from './Company.js';
+import BranchVsGroup from './BranchVsGroup.js';
 
-class Branch extends sequelize.Model {
+class Branch extends Sequelize.Model {
     static associate() {
         this.belongsTo(
-            sequelizeInstance.models.company,
+            Company,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'company_id',
                     name: 'company_id',
                 },
             },
         );
 
         this.hasMany(
-            sequelizeInstance.models.branch_vs_group,
+            BranchVsGroup,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'branch_id',
                     name: 'branch_id',
                 },
             },
@@ -32,13 +32,13 @@ class Branch extends sequelize.Model {
 Branch.init(
     {
         name: {
-            type: sequelize.DataTypes.STRING(64),
+            type: Sequelize.DataTypes.STRING(64),
             allowNull: false,
             validate: { notEmpty: true },
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'branch',
         tableName: 'branches',
         indexes: [

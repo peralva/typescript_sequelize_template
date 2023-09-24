@@ -1,53 +1,51 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import sequelize from './sequelize.js';
+import Endpoint from './Endpoint.js';
+import Group from './Group.js';
 
-class EndpointVsGroup extends sequelize.Model {
+class EndpointVsGroup extends Sequelize.Model {
     static associate() {
         this.belongsTo(
-            sequelizeInstance.models.endpoint,
+            Endpoint,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'endpoint_id',
                     name: 'endpoint_id',
                 },
             },
         );
 
         this.belongsTo(
-            sequelizeInstance.models.group,
+            Group,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
         );
 
-        sequelizeInstance.models.endpoint.belongsToMany(
-            sequelizeInstance.models.group,
+        Endpoint.belongsToMany(
+            Group,
             {
                 through: this,
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'endpoint_id',
                     name: 'endpoint_id',
                 },
             },
         );
 
-        sequelizeInstance.models.group.belongsToMany(
-            sequelizeInstance.models.endpoint,
+        Group.belongsToMany(
+            Endpoint,
             {
                 through: this,
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'group_id',
                     name: 'group_id',
                 },
             },
@@ -58,14 +56,14 @@ class EndpointVsGroup extends sequelize.Model {
 EndpointVsGroup.init(
     {
         id: {
-            type: sequelize.DataTypes.INTEGER,
+            type: Sequelize.DataTypes.INTEGER,
             primaryKey: true,
             autoIncrement: true,
             allowNull: false,
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'endpoint_vs_group',
         tableName: 'endpoints_vs_groups',
         indexes: [

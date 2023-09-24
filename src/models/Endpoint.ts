@@ -1,15 +1,15 @@
-import sequelize from 'sequelize';
-import sequelizeInstance from './sequelize.js';
+import Sequelize from 'sequelize';
+import sequelize from './sequelize.js';
+import EndpointVsGroup from './EndpointVsGroup.js';
 
-class Endpoint extends sequelize.Model {
+class Endpoint extends Sequelize.Model {
     static associate() {
         this.hasMany(
-            sequelizeInstance.models.endpoint_vs_group,
+            EndpointVsGroup,
             {
                 onDelete: 'NO ACTION',
                 foreignKey: {
                     allowNull: false,
-                    field: 'endpoint_id',
                     name: 'endpoint_id',
                 },
             },
@@ -20,23 +20,23 @@ class Endpoint extends sequelize.Model {
 Endpoint.init(
     {
         path: {
-            type: sequelize.DataTypes.STRING(64),
+            type: Sequelize.DataTypes.STRING(64),
             allowNull: false,
             validate: { notEmpty: true },
         },
         method: {
-            type: sequelize.DataTypes.STRING(7),
+            type: Sequelize.DataTypes.STRING(7),
             allowNull: false,
             validate: { notEmpty: true },
         },
         description: {
-            type: sequelize.DataTypes.STRING(64),
+            type: Sequelize.DataTypes.STRING(64),
             allowNull: false,
             validate: { notEmpty: true },
         },
     },
     {
-        sequelize: sequelizeInstance,
+        sequelize: sequelize,
         modelName: 'endpoint',
         tableName: 'endpoints',
         indexes: [
