@@ -5,6 +5,7 @@ import Branch from './models/Branch.js';
 import sequelize from './models/sequelize.js';
 import Company from './models/Company.js';
 import Sequelize from 'sequelize';
+import Token from './models/Token.js';
 
 export default async () => {
     console.log(await sequelize.transaction((transaction: Sequelize.Transaction) => Company.create(
@@ -27,6 +28,7 @@ export default async () => {
                         username: 'usuario',
                         password: 'Usuário Senha',
                         enabled: true,
+                        tokens: [{ value: '' }],
                     }],
                 },
             ],
@@ -38,11 +40,19 @@ export default async () => {
                 include: [
                     Branch,
                     Endpoint,
-                    User,
+                    {
+                        model: User,
+                        include: Token,
+                    },
                 ],
             },
         },
     )));
+
+    await Token.create({
+        user_id: 1,
+        value: '',
+    });
 
     console.log(JSON.stringify(
         await Company.findOne(
@@ -52,7 +62,10 @@ export default async () => {
                     include: [
                         Branch,
                         Endpoint,
-                        User,
+                        {
+                            model: User,
+                            include: Token,
+                        },
                     ],
                 },
             },
